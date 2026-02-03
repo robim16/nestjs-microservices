@@ -10,13 +10,20 @@ async function bootstrap() {
 
   const port = Number(process.env.CATALOG_TCP_PORT ?? 4011)
 
+  const rmqUrl = process.env.RABBITMQ_URL ?? 'amqp://localhost:5672'
+
+  const queue = process.env.CATALOG_QUEUE ?? 'catalog_queue'
+
   const app = await NestFactory.createMicroservice<MicroserviceOptions>(
     CatalogModule,
     {
-      transport: Transport.TCP,
+      transport: Transport.RMQ,
       options: {
-        host: '0.0.0.0',
-        port,
+        urls: [rmqUrl],
+        queue,
+        queueOptions: {
+          durable: false
+        }
       },
     },
   );
@@ -24,6 +31,6 @@ async function bootstrap() {
   
   await app.listen();
   
-  logger.log(`Catalog microservice is running on TCP port: ${port}`);
+  logger.log(`Catalog RMQ listening on queue ${queue} via ${rmqUrl}`);
 }
 bootstrap();
