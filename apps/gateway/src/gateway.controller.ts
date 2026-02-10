@@ -10,11 +10,11 @@ export class GatewayController {
     @Inject('CATALOG_CLIENT') private readonly catalogClient: ClientProxy,
     @Inject('MEDIA_CLIENT') private readonly mediaClient: ClientProxy,
     @Inject('SEARCH_CLIENT') private readonly searchClient: ClientProxy
-  ) {}
+  ) { }
 
   @Get('health')
-  async health(){
-    const ping = async (serviceName : string, client: ClientProxy) => {
+  async health() {
+    const ping = async (serviceName: string, client: ClientProxy) => {
       try {
         const result = await firstValueFrom(
           client.send('service.ping', { from: 'gateway' })
@@ -22,7 +22,7 @@ export class GatewayController {
 
         return {
           ok: true,
-          service : serviceName,
+          service: serviceName,
           result
         }
 
@@ -32,7 +32,7 @@ export class GatewayController {
           service: serviceName,
           error: error?.message ?? 'Unknown error'
         }
-        
+
       }
     }
 
@@ -46,8 +46,15 @@ export class GatewayController {
 
     return {
       ok,
-      service: 'gateway',
-      now: new Date().toISOString()
+      gateway: {
+        service: 'gateway',
+        now: new Date().toISOString()
+      },
+      services: {
+        catalog,
+        media,
+        search
+      }
     }
   }
 }
