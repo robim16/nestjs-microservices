@@ -45,9 +45,23 @@ export class AuthService {
                 }
             }
 
+            const user = await this.clerk.users.getUser(clerkUserId)
+
+            const primaryEmail = user.emailAddresses.find((e) => e.id === user.primaryEmailAddressId)?.emailAddress ??
+                user.emailAddresses[0]?.emailAddress ?? ''
+
+            const fullName = [user.firstName, user.lastName].filter(Boolean).join(' ') || 
+            user.username || primaryEmail || clerkUserId
+
+            return {
+                clerkUserId,
+                email: emailFromToken || primaryEmail,
+                name: nameFromToken || fullName,
+                role
+            }
 
         } catch (error) {
-
+            throw new UnauthorizedException("Invalid token", error instanceof Error ? error.message : undefined)
         }
     }
 }
