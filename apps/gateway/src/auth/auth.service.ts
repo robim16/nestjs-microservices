@@ -1,7 +1,7 @@
-import { createClerkClient } from "@clerk/backend";
+import { createClerkClient, verifyToken } from "@clerk/backend";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { UserContext } from "./auth.types";
-import { verifyToken } from "node_modules/@clerk/backend/dist/tokens/verify";
+
 
 
 @Injectable()
@@ -19,7 +19,9 @@ export class AuthService {
 
     async verifyAndBuildContext(token: string): Promise<UserContext> {
         try {
-            const verified = await verifyToken(token, this.jwtVerifyOptions())
+
+            const verified: any = await verifyToken(token, this.jwtVerifyOptions())
+
             const payload = verified?.payload ?? verified?.payload ?? verified;
 
             const clerkUserId = payload?.sub ?? payload?.userId

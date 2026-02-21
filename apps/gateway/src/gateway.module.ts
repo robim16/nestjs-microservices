@@ -3,6 +3,9 @@ import { GatewayController } from './gateway.controller';
 import { GatewayService } from './gateway.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { ConfigModule } from '@nestjs/config';
+import { MongooseModule } from '@nestjs/mongoose';
+import { UsersModule } from './users/user.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -10,10 +13,14 @@ import { ConfigModule } from '@nestjs/config';
       isGlobal: true,
     }),
 
+    MongooseModule.forRoot(process.env.MONGO_URI_USERS as string),
+    UsersModule,
+    AuthModule,
+
     ClientsModule.register(
       [
         {
-          name: 'CATALOG_SERVICE',
+          name: 'CATALOG_CLIENT',
           transport: Transport.RMQ,
           options: {
             urls: [process.env.RABBITMQ_URL ?? 'amqp://localhost:5672'],
@@ -22,7 +29,7 @@ import { ConfigModule } from '@nestjs/config';
           },
         },
         {
-          name: 'MEDIA_SERVICE',
+          name: 'MEDIA_CLIENT',
           transport: Transport.RMQ,
           options: {
             urls: [process.env.RABBITMQ_MEDIA_URL ?? 'amqp://localhost:5672'],
@@ -31,7 +38,7 @@ import { ConfigModule } from '@nestjs/config';
           },
         },
         {
-          name: 'SEARCH_SERVICE',
+          name: 'SEARCH_CLIENT',
           transport: Transport.RMQ,
           options: {
             urls: [process.env.RABBITMQ_SEARCH_URL ?? 'amqp://localhost:5672'],
