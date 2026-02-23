@@ -42,7 +42,7 @@ export class JwtAuthGuard implements CanActivate {
             throw new UnauthorizedException('Missing token')
         }
 
-        const identifyAuthaUser = await this.authService.verifyAndBuildContext(token)
+        const identifyAuthaUser = await this.authService.verifyAndBuildContext(token)//se extrae el token del header, se verifica y se construye el contexto del usuario a partir del token
 
         const dbUser = await this.usersService.upsertAuthUser({
             clerkUserId: identifyAuthaUser.clerkUserId,
