@@ -23,3 +23,8 @@ export class CreateProductDto {
     @IsString()
     createdByClerkUserId: string
 }
+
+export class GetProductByIdDto {
+    @IsString()
+    id: string;
+}
