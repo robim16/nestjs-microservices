@@ -1,4 +1,4 @@
-import { IsString } from "class-validator"
+import { IsOptional, IsString } from "class-validator"
 
 
 export class UploadProductImageDto {
@@ -16,9 +16,13 @@ export class UploadProductImageDto {
 }
 
 export class AttachToProductDto {
+    @IsString()
     mediaId: string
 
-    productID: string
+    @IsString()
+    productId: string
 
+    @IsOptional()
+    @IsString()
     attachedByUserId: string
 }
