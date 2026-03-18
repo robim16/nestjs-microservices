@@ -16,5 +16,6 @@ export function initCloudinary() {
         secure: true
     })
 
+    console.log("Cloudinary Configured:", cloudinary.config().cloud_name);
     return cloudinary
 }

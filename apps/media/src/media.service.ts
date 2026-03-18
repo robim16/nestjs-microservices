@@ -52,7 +52,8 @@ export class MediaService {
           },
           (error, result) => {
             if (error) {
-              console.error('Cloudinary Upload Error:', error);
+              // console.error('Cloudinary Upload Error:', error);
+              console.dir(error, { depth: null });
               return reject(error);
             }
             if (!result) {
