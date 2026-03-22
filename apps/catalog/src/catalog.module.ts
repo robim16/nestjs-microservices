@@ -7,6 +7,7 @@ import { Product, ProductSchema } from './products/product.schema';
 import { ProductController } from './products/product.controller';
 import { ProductService } from './products/products.service';
 import { ClientsModule, Transport } from '@nestjs/microservices';
+import { ProductEventsPublisher } from './events/product.events.publisher';
 
 @Module({
   imports: [
@@ -29,6 +30,6 @@ import { ClientsModule, Transport } from '@nestjs/microservices';
     ])
   ],
   controllers: [CatalogController, ProductController],
-  providers: [CatalogService, ProductService],
+  providers: [CatalogService, ProductService, ProductEventsPublisher],
 })
 export class CatalogModule {}
