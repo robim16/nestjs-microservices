@@ -7,10 +7,10 @@ import { Model } from 'mongoose';
 export class SearchService {
 
   constructor(
-    @InjectModel(SearchProduct.name) private readonly model : Model<SearchProductDocument>
-  ){}
+    @InjectModel(SearchProduct.name) private readonly model: Model<SearchProductDocument>
+  ) { }
 
-  normalizeText(input: { name: string; description: string}) {
+  normalizeText(input: { name: string; description: string }) {
     return `${input.name} ${input.description}`.toLocaleLowerCase()
   }
 
@@ -20,32 +20,37 @@ export class SearchService {
     description: string,
     status: 'DRAFT' | 'ACTIVE',
     price: number
-  }){
+  }) {
 
     const normalizedText = this.normalizeText({
       name: input.name,
       description: input.description
     })
 
-    await this.model.findOneAndUpdate(
-      {productId : input.productId},
-      {
-        $set: {
-          name: input.name,
-          normalizedText,
-          status: input.name,
-          price: input.price
+    try {
+
+      await this.model.findOneAndUpdate(
+        { productId: input.productId },
+        {
+          $set: {
+            name: input.name,
+            normalizedText,
+            status: input.name,
+            price: input.price
+          }
+        },
+        {
+          upsert: true,
+          new: true,
+          setDefaultsOnInsert: true
         }
-      },
-      {
-        upsert: true,
-        new: true,
-        setDefaultsOnInsert: true
-      }
-    )
+      )
+    } catch (error) {
+      console.log(error);
+    }
   }
-  
-  async query(input : {q: string; limit?: number}) {
+
+  async query(input: { q: string; limit?: number }) {
     const q = (input.q ?? "").trim().toLocaleLowerCase()
 
     if (!q) {
