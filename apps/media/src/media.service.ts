@@ -32,6 +32,14 @@ export class MediaService {
       rpcBadRequest('Only images are allowed');
     }
 
+    const currentConfig = this.cloudinary.config();
+    console.log('--- CLOUDINARY DEBUG START ---');
+    console.log('Cloud Name:', currentConfig.cloud_name);
+    console.log('API Key:', currentConfig.api_key);
+    console.log('API Secret (4 primeros chars):', currentConfig.api_secret?.substring(0, 4) + '****');
+    console.log('Base64 Length:', input.base64?.length);
+    console.log('--- CLOUDINARY DEBUG END ---');
+
     // Limpiar el string base64 por si viene con el prefijo data:image/...
     const base64Data = input.base64.replace(/^data:image\/\w+;base64,/, '');
     const buffer = Buffer.from(base64Data, 'base64');
@@ -45,14 +53,14 @@ export class MediaService {
       const uploadResult = await new Promise<UploadApiResponse>((resolve, reject) => {
         const uploadStream = this.cloudinary.uploader.upload_stream(
           {
-            folder: 'nestjs-microservice/products',
-            resource_type: 'image',
-            upload_preset: 'ml_default',
-            public_id: input.fileName.split('.')[0]
+            // folder: 'nestjs-microservice/products',
+            // resource_type: 'image',
+            upload_preset: 'nestjs-micros',
+            // public_id: input.fileName.split('.')[0]
           },
           (error, result) => {
             if (error) {
-              // console.error('Cloudinary Upload Error:', error);
+              console.error('DETALLE COMPLETO DEL ERROR 403:');
               console.dir(error, { depth: null });
               return reject(error);
             }
